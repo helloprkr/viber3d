@@ -1,0 +1,122 @@
+
+Viber3d Project Rules
+markdown
+
+Collapse
+
+Wrap
+
+Copy
+### Code Style and Structure
+- Write **concise, technical TypeScript code** with accurate examples, prioritizing performance-critical areas like 3D rendering and game logic.
+- Use **functional and declarative programming** patterns; avoid classes unless required for performance (e.g., in render loops).
+- Prefer **iteration and modularization** over code duplication, especially for reusable 3D components (e.g., meshes, lights) and game systems (e.g., physics, controls).
+- Use **descriptive variable names** with auxiliary verbs for clarity (e.g., `isLoading`, `hasCollided`).
+- Structure files logically in this order:
+  1. Exported component (e.g., `GameWorld`)
+  2. Subcomponents (e.g., `Player`, `Enemy`)
+  3. Game logic helpers (e.g., `calculateCollision`)
+  4. 3D asset loaders (e.g., `loadGLTF`)
+  5. Static content (e.g., constants, configs)
+  6. Types (e.g., `interface GameState`)
+
+### Naming Conventions
+- Use **lowercase with dashes** for directories (e.g., `components/game-world`, `utils/3d-helpers`).
+- Favor **named exports** for components and game systems to improve traceability (e.g., `export { PlayerController }` instead of `export default`).
+- Name 3D-related components and functions **clearly and descriptively** (e.g., `PlayerController`, `RenderLoop`, `updateCameraPosition`).
+
+### TypeScript Usage
+- Write **all code in TypeScript** to ensure type safety across the project.
+- Prefer **`interface`** over `type` for defining object shapes, such as 3D objects and game entities (e.g., `interface Player { position: Vector3 }`).
+- Avoid **enums**; use maps or object literals for game states or entity types (e.g., `const GameStates = { Idle: 'idle', Running: 'running' }`).
+- Define props for functional components with **TypeScript interfaces** (e.g., `interface Props { position: Vector3; velocity: Vector3 }`).
+- Ensure 3D-specific types like vectors and matrices are properly typed (e.g., use `Vector3` from Three.js: `position: Vector3`).
+
+### Syntax and Formatting
+- Use the **`function` keyword** for pure game logic functions (e.g., `function calculateVelocity(delta: number)`).
+- Skip curly braces for **simple `if` statements** to keep code concise (e.g., `if (isJumping) applyForce()`).
+- Write **declarative JSX** for 3D scenes using React Three Fiber (e.g., `<mesh position={[0, 0, 0]}><boxGeometry /><meshStandardMaterial color="red" /></mesh>`).
+
+### UI and Styling
+- Use **React Three Fiber** for 3D rendering; optimize materials and geometries for performance (e.g., reuse materials, minimize shader complexity).
+- Implement **responsive design** for any UI overlays (e.g., HUD, menus) using **Tailwind CSS**, following a mobile-first approach.
+
+### Performance Optimization
+- Minimize `'use client'`, `useEffect`, and `setState`; favor **server-side logic** where applicable (e.g., precomputing level data).
+- Wrap 3D asset loading in **`<Suspense>`** with a fallback (e.g., `<Suspense fallback={<LoadingScreen />}>` for models or textures).
+- Use **dynamic imports** for non-critical game assets (e.g., `const LazyModel = dynamic(() => import('./Model'))`).
+- Optimize 3D assets:
+  - Use **compressed textures** (e.g., KTX2 or Basis).
+  - Implement **level of detail (LOD)** for distant objects.
+  - Use **instancing** for repeated objects (e.g., trees, enemies).
+
+### Key Conventions
+- Use **Zustand** for game state management; optimize for **reactivity** and minimal re-renders (e.g., `useStore((state) => state.playerPosition)`).
+- Focus on **3D performance metrics**:
+  - Aim for a **frame rate** of 60 FPS.
+  - Reduce **load times** with efficient asset pipelines.
+  - Monitor and minimize **memory usage**.
+- Limit `'use client'`:
+  - Prefer server-side logic for non-interactive parts (e.g., level generation).
+  - Use `'use client'` only for WebGL rendering and game loop logic.
+  - Avoid for game state management or data fetching.
+
+### Best Practices
+- Follow the **React Three Fiber documentation** for 3D rendering, animations, and scene management (e.g., use `<Canvas>` and hooks like `useFrame`).
+- Apply **Three.js best practices**:
+  - Use **buffer geometries** for efficient rendering.
+  - Minimize **draw calls** by combining meshes where possible.
+  - Optimize shaders and lighting for performance.
+Details & Best Practices for Viber3d
+markdown
+
+Collapse
+
+Wrap
+
+Copy
+### Details & Best Practices for Viber3d
+
+#### 1. **Code Structure and Modularity**
+   - Break down game systems (e.g., physics, rendering, input) into **separate modules** for clarity and reusability.
+   - Use **composition** for game entities (e.g., player, enemies) by combining smaller components (e.g., `Position`, `Velocity`, `Health`).
+
+#### 2. **TypeScript for Game Development**
+   - Leverage TypeScript’s **generics** for reusable game systems (e.g., `EntitySystem<T>`).
+   - Use **union types** for game states (e.g., `type GameState = 'loading' | 'playing' | 'paused' | 'gameOver'`).
+
+#### 3. **Performance Considerations**
+   - Use **memoization** (e.g., `useMemo`, `useCallback`) to prevent unnecessary re-renders in React components.
+   - Profile your game with **Chrome DevTools** or **Three.js Inspector** to identify bottlenecks.
+   - Implement **object pooling** for frequently created/destroyed objects (e.g., bullets, particles) to reduce garbage collection overhead.
+
+#### 4. **3D Asset Management**
+   - Use **GLTF models** for 3D assets; optimize with tools like **gltfpack** for smaller file sizes.
+   - Preload critical assets (e.g., player model, initial level) to minimize in-game loading times.
+   - Use **texture atlases** to reduce texture switches during rendering.
+
+#### 5. **State Management with Zustand**
+   - Structure your store with **shallow** selectors to avoid unnecessary re-renders (e.g., `useStore((state) => state.player.health)`).
+   - Keep the store **minimal**; avoid storing large objects or frequently updated data that could cause performance issues.
+
+#### 6. **Rendering and Animation**
+   - Use **useFrame** for game loop logic (e.g., updating positions, checking collisions).
+   - Minimize state updates in the render loop; prefer direct mutations where possible for performance.
+   - Implement **delta time** in animations and physics to ensure consistent behavior across devices (e.g., `position += velocity * delta`).
+
+#### 7. **UI and Overlays**
+   - Use **React’s Suspense** for lazy-loading UI components that aren’t immediately needed (e.g., pause menu).
+   - Ensure UI elements are **responsive** and adapt to different screen sizes, especially for mobile or VR contexts.
+
+#### 8. **Testing and Debugging**
+   - Write **unit tests** for game logic helpers (e.g., collision detection, score calculation) using Jest.
+   - Use **React Three Fiber’s debug tools** (e.g., `useHelper` for visualizing lights or cameras).
+   - Implement a **debug mode** toggle to display performance stats (e.g., FPS, draw calls) during development.
+
+#### 9. **Cursor Rules and LLM Integration**
+   - Define Cursor Rules in a custom syntax for clarity (e.g., `when new 3D component is created, suggest adding useFrame for animations`).
+   - Use LLMs to generate boilerplate code for common patterns (e.g., “Create a new enemy type with basic movement”).
+
+#### 10. **Documentation and Community**
+    - Maintain a **README** with setup instructions, project structure, and contribution guidelines.
+    - Encourage community contributions by providing clear examples and templates for new features or components.
